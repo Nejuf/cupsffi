@@ -224,12 +224,18 @@ class CupsPrinter
       ppd_options[ppd_option[:keyword]] = ppd_option
     end
 
+    # Common CUPS options (http://www.cups.org/documentation.php/options.html#OPTIONS)
+    cups_options = %w{ copies fit-to-page media landscape orientation-requested sides nowrap
+      job-sheets job-hold-until job-priority outputorder page-ranges page-set number-up number-up-layout
+      page-border mirror raw cpi lpi page-right page-left page-bottom page-top prettyprint }
+
     # Examine each input option to make sure that both the key and value are
     # found in the ppd options.
     options.each do |key,value|
       key_string = key.to_s
-      # Accept common CUPS options
-      next if ['copies'].include?(key_string)
+
+      # Accept CUPS options
+      next if cups_options.include?(key_string)
 
       raise "Invalid option #{key} for printer #{@name}" if ppd_options[key_string].nil?
       choices = ppd_options[key_string][:choices].map{|c| c[:choice]}
